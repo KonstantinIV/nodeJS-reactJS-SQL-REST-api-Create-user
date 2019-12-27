@@ -1,27 +1,22 @@
 const http = require('http');
+var  fs = require('fs');
+
+
 const hostname = '192.168.1.246';
 const port = 3001;
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  var url = req.url; 
-      
-    if(url ==='/about') { 
-        res.write(' Welcome to about us page');  
-        console.log(req);
-        //console.log(res);
-        res.end();  
-    } 
-    else if(url ==='/contact') { 
-        res.write(' Welcome to contact us page');  
-        res.end();  
-    } 
-    else { 
-        res.write('Hello World!');  
-        res.end();  
-    } 
-  res.end('Hello World\n');
-});
-server.listen(port, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+
+ 
+
+
+fs.readFile('./index.html', function (err, html) {
+  if (err) {
+    throw err; 
+  } 
+  const server = http.createServer(function(request, response) { 
+    response.writeHeader(200, {"Content-Type": "text/html"}); 
+    response.write(html); 
+    response.end(); 
+  }).listen(port, hostname, () => {
+     console.log(`Server running at http://${hostname}:${port}/`);
+     });
+ });

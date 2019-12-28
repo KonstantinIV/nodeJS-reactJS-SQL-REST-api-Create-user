@@ -8,18 +8,47 @@ const port = 3001;
 
 
 
-const server = http.createServer(function(request, response) { 
-  response.writeHeader(200, {"Content-Type": "text/html"}); 
+const server = http.createServer(function(req, res) { 
   
-  fs.readFile('./index.html', function (err, html) {
-    if (err) {
-      throw err; 
-    } 
-    response.write(html); 
-    response.end(); 
+  var url = req.url; 
+
+    if(url ==='/') { 
+      
+
+       res.writeHeader(200, {"Content-Type": "text/html"}); 
+      fs.readFile('./index.html', function (err, html) {
+        
+        if (err) {
+          throw err; 
+        } 
+        
+        res.end(html, 'utf-8'); 
+        
+       }); 
+    }else if(url ==='/content/main.css'){
+      res.writeHeader(200, {"Content-Type": "text/css"}); 
+      fs.readFile('./content/main.css', function (err, html) {
+        if (err) {
+          throw err; 
+        } 
+        
+        res.write(html)
+        res.end(); 
+       });
+    }else if(url ==='/content/main.js'){
+      res.writeHeader(200, {"Content-Type": "text/css"}); 
+      fs.readFile('./content/main.js', function (err, html) {
+        if (err) {
+          throw err; 
+        } 
+        
+        res.write(html)
+        res.end(); 
+       });
+    }
+  
+  
     
-   }); 
-  
   
 }).listen(port, hostname, () => {
    console.log(`Server running at http://${hostname}:${port}/`);

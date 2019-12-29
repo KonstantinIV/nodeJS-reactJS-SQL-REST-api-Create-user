@@ -11,10 +11,13 @@ const port = 3001;
 const server = http.createServer(function(req, res) { 
   
   var url = req.url; 
+  var sUrl  = url.split('/');
+  console.log(sUrl);
+  //console.log("****");
     if(url ==='/') { 
       
        res.writeHeader(200, {"Content-Type": "text/html"}); 
-      fs.readFile('./index.html', function (err, html) {
+      fs.readFile('./build/index.html', function (err, html) {
         
         if (err) {
           throw err; 
@@ -55,7 +58,23 @@ const server = http.createServer(function(req, res) {
     });
     
       res.end();
-       }
+       }else if(sUrl[1] ==='static'){
+        var path     = sUrl.slice(-2)[0]+"/"+sUrl.slice(-1)[0];
+        console.log(path);
+        var fileName = url;
+        res.writeHeader(200, {"Content-Type": "text/css"}); 
+        
+        
+        fs.readFile('./build'+fileName, function (err, html) {
+          
+          if (err) {
+            throw err; 
+          } 
+          
+          res.end(html, 'utf-8'); 
+          
+         }); 
+         }
   
   
     

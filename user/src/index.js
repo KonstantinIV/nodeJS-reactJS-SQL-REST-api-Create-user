@@ -102,6 +102,8 @@ function Square(props) {
         request.setRequestHeader('Content-Type', 'text/plain; charset=UTF-8');
         request.send("name");
 
+        
+
         this.setState({
           stepNumber: step,
           xIsNext: (step % 2) === 0

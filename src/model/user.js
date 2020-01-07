@@ -6,7 +6,9 @@ module.exports.insertUser = function insertUser(){
 module.exports.getUser = function getUser(){
     return 'Select username from user where username=?;';
 }
-
+module.exports.getUsers = function getUsers(){
+    return 'Select ID,username from user ;';
+}
 
 
 module.exports.updateUser = function updateUser(){

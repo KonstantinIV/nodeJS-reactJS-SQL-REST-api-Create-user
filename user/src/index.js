@@ -1,161 +1,159 @@
-import React from 'react' ;
-import ReactDOM from 'react-dom';
-import './index.css'
+import React from "react";
+import ReactDOM from "react-dom";
 
- // ========================================
- function calculateWinner(squares) {
-    const lines = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-    ];
-    for (let i = 0; i < lines.length; i++) {
-      const [a, b, c] = lines[i];
-      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-        return squares[a];
-      }
-    }
-    return null;
+import "./bootstrap.min.css";
+import "./App.css";
+
+class ListUsername extends React.Component {
+  render() {
+    return (
+      <tr>
+        <td>{this.props.number}</td>
+        <td>{this.props.username}</td>
+      </tr>
+    );
   }
+}
+
+class ListUser extends React.Component {
+  render() {
+    return (
+      <table>
+        <caption>Users</caption>
+
+        <tbody>
+          <tr>
+            <th>Nr.</th>
+            <th>Username</th>
+          </tr>
+          {this.props.html}
+        </tbody>
+      </table>
+    );
+  }
+}
+
+class Base extends React.Component {
   
-function Square(props) {
-      return (
-        <button className="square" onClick={ props.onClick}>
-          {props.value}
+
+  render() {
+    return (
+      <div className="userContainer">
+        <input
+          className="inputDef"
+          type="text"
+          name="firstname"
+          value={this.props.value}
+          onChange={this.props.handleChange}
+        />
+        <button className="buttonDef" onClick={() => this.props.onClick()}>
+          Post
         </button>
-      );
-    }
-  
-  
-  class Board extends React.Component {
-     
-
-    
-
-    
-    renderSquare(i) {
-      return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} />;
-    }
-  
-    render() {
-    
-   return (
-        <div>
-          
-          <div className="board-row">
-            {this.renderSquare(0)}
-            {this.renderSquare(1)}
-            {this.renderSquare(2)}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(3)}
-            {this.renderSquare(4)}
-            {this.renderSquare(5)}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(6)}
-            {this.renderSquare(7)}
-            {this.renderSquare(8)}
-          </div>
-        </div>
-      );
-    }
+        <button className="buttonDef">Get</button>
+        <button className="buttonDef">Change</button>
+        <button className="buttonDef">Delete</button>
+      </div>
+    );
   }
-  
-  class Game extends React.Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            history: [{
-                squares: Array(9).fill(null),
-            }],
-            stepNumber: 0,
-            xIsNext: true
-        }
-    }
+}
 
-    handleClick(i) {
-        const history = this.state.history.slice(0, this.state.stepNumber + 1);
-        const current = history[this.state.stepNumber];
-        const squares = current.squares.slice();
-        if (calculateWinner(squares) || squares[i]) {
-          return;
-        }
-        squares[i] = this.state.xIsNext ? 'X' : 'O';
-        this.setState({
-          history: history.concat([{
-            squares: squares
-          }]),
-          stepNumber: history.length,
-          xIsNext: !this.state.xIsNext,
-        });
-      }
-
-      jumpTo(step) {
-        var request = new XMLHttpRequest();
-        request.open('POST', '/user', true);
-        request.setRequestHeader('Content-Type', 'text/plain; charset=UTF-8');
-        request.send("name");
-
-        
-
-        this.setState({
-          stepNumber: step,
-          xIsNext: (step % 2) === 0
-        });
-      }
-    render() {
-
-        const history = this.state.history;
-        const current = history[this.state.stepNumber];
-        const winner = calculateWinner(current.squares);
-    
-        const moves = history.map((step, move) => {
-            const desc = move ?
-              'Go to move #' + move :
-              'Go to game start';
-            return (
-              <li key={move}>
-                <button onClick={() => this.jumpTo(move)}>{desc}</button>
-              </li>
-            );
-          });
-
-        let status;
-        if (winner) {
-          status = 'Winner: ' + winner;
-        } else {
-          status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-        }
-
-
-
-
-      return (
-        <div className="game">
-          <div className="game-board">
-              <Board
-            squares={current.squares}
-            onClick={(i) => this.handleClick(i)}
-            />
-          </div>
-          <div className="game-info">
-          <div>{status}</div>
-          <ol>{moves}</ol>
-          </div>
-        </div>
-      );
-    }
+class Main extends React.Component {
+  constructor(props) {
+    super(props);
+    this.request = new XMLHttpRequest();
+    this.state = {
+      html: [],
+      username: "",
+      number: 1
+    };
+    this.getUsernames();
+    this.handleChange = this.handleChange.bind(this);
+    //this.restApi      = this.restApi.bind(this);
   }
-  
- 
 
-  ReactDOM.render(
-    <Game />,
-    document.getElementById('root')
-  );
+  handleChange(event) {
+    this.setState({ username: event.target.value });
+  }
+
+
+
+
+
+
+
+
+
+   restApi(requestType, URL,callBack){
+    var data;
+    this.request.open(requestType, URL, true);
+    this.request.setRequestHeader(
+      "Content-Type",
+      "application/x-www-form-urlencoded; charset=UTF-8"
+    );
+    this.request.send();
+     this.request.onreadystatechange =   function() {
+      if (this.request.readyState === XMLHttpRequest.DONE) {
+        //console.log(JSON.parse(request.response));
+        data =   JSON.parse(this.request.response) ; 
+        callBack(data);
+      }
+    }.bind(this);
+
+  
+   console.log(data);
+
+  }
+  getUsernames() {
+    this.restApi("GET","/user",username => {
+      username.forEach(username => {
+        this.setState({
+          html: this.state.html.concat(
+            this.usernameRow(username.username, this.state.number)
+          )
+        });
+    })
+  
+  })
+  }
+
+  
+
+  postClick() {
+    this.restApi("POST","/user?username=" + this.state.username,result => {
+      console.log(result);
+      var username = this.state.username;
+        this.setState({
+          html: this.state.html.concat(
+            this.usernameRow(username, this.state.number)
+          )
+        });
+  
+  })
+
+
+
+
+
+  }
+
+  usernameRow(username, number) {
+    this.setState({ number: number + 1 });
+
+    return <ListUsername key={number} username={username} number={number} />;
+  }
+
+  render() {
+    return (
+      <div>
+        <Base
+          onClick={() => this.postClick()}
+          handleChange={this.handleChange}
+        />
+        <ListUser html={this.state.html} />
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<Main />, document.getElementById("root"));
+

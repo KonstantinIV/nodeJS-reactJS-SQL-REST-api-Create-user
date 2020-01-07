@@ -89,3 +89,7 @@
       //not connected
       console.log(err)
     });
+
+
+      //"proxy": "http://192.168.1.246:3001" ,
+?username=kostar

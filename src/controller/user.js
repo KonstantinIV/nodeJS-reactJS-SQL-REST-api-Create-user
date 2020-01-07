@@ -9,21 +9,40 @@ var user = {
 
 
     GET :  function(urlArray,data,res){
-     database.runQuery(model.getUser(),[data.username]).then(result => {
-            console.log(result)
-            
+        if(!data.username){
+     
+
+         database.runQuery(model.getUsers(),[]).then(result=> {
+
+            var respo = JSON.stringify(result);
+            res.write(respo);
+            res.end();
          });
+         
+         
+     
+
+
+        }else{
+            database.runQuery(model.getUser(),[data.username]).then(result => {
+                console.log(result)
+                
+             });
+        }
+         
+     
 
         console.log("GET")
-        res.end();
+        
 
     },
     POST : (urlArray,data,res) =>{
         database.runQuery(model.insertUser(),[data.username]).then(result => {
             console.log(result)
-            
+            res.write(JSON.stringify(result));
+            res.end();
+
          });
-        res.end();
        
     },
     DELETE : (urlArray,data,res) =>{

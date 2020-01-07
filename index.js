@@ -14,10 +14,10 @@ const port = 3001;
 
 
 const server = http.createServer(function(req, res) { 
-  
+ 
    console.log(req.url);
    var parsedUrl = url.parse(req.url,true);
-   console.log(parsedUrl.query.username);
+  // console.log(parsedUrl.query.username);
 
 
 router.parseUrl(parsedUrl.pathname);

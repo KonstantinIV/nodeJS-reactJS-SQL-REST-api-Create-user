@@ -12,11 +12,11 @@ module.exports.getUsers = function getUsers(){
 
 
 module.exports.updateUser = function updateUser(){
-    return 'UPDATE user SET   username=?    WHERE   username=? ;';
+    return 'UPDATE user SET   username=?    WHERE   ID=? ;';
     
 }
 
 
 module.exports.deleteUser = function deleteUser(){
-    return 'DELETE user.* FROM user where username=?;';
+    return 'DELETE user.* FROM user where ID=?;';
 }

@@ -46,19 +46,21 @@ var user = {
        
     },
     DELETE : (urlArray,data,res) =>{
-        database.runQuery(model.deleteUser(),[data.username]).then(result => {
+        database.runQuery(model.deleteUser(),[data.ID]).then(result => {
             console.log(result)
-            
+            res.end(JSON.stringify(result));
+
+
          });
-        res.end();
 
     },
     PUT : (urlArray,data,res) =>{
         console.log(data)
-        database.runQuery(model.updateUser(),[data.usernameNew,data.usernameOld]).then(result => {
+        database.runQuery(model.updateUser(),[data.usernameNew,data.ID]).then(result => {
             console.log(result)
+            res.end(JSON.stringify(result));
+
          });
-        res.end();
     },
 
     

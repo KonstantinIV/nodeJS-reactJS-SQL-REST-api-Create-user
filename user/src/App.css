@@ -69,4 +69,10 @@ td:nth-child(1) {
 th:nth-child(1) {
   width: 20%;
 }
+.tr{
+  background-color: antiquewhite;
+  color: pink;
+  border:5px solid blue;
+}
+
 

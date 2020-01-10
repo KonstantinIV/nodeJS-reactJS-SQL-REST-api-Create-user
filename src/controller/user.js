@@ -39,7 +39,7 @@ var user = {
     POST : (urlArray,data,res) =>{
         database.runQuery(model.insertUser(),[data.username]).then(result => {
             console.log(result)
-            res.write(JSON.stringify(result));
+            res.write(JSON.stringify(result.insertId));
             res.end();
 
          });

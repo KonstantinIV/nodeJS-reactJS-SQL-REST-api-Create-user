@@ -36,7 +36,20 @@ class ListUser extends React.Component {
             <th>Nr.</th>
             <th>Username</th>
           </tr>
-          {this.props.html}
+          {Object.keys(this.props.users).map((id,index) => (
+            <ListUsername
+            id={id} 
+            chosenitem={this.props.chosenitem} 
+            onClick={this.props.saveChosenItem} 
+            key={id}
+            username={this.props.users[id]}
+            number={index+1}
+          />
+      ))
+          
+          
+          
+          }
         </tbody>
       </table>
     );
@@ -74,15 +87,18 @@ class Main extends React.Component {
     this.state = {
       html: [],
       username: "",
+      users: {},
       number: 1,
       classBool: false,
-      chosenitem: false
+      chosenitem: false,
+      copyHtml : []
     };
     this.getUsernames();
     this.handleChange = this.handleChange.bind(this);
     this.saveChosenItem = this.saveChosenItem.bind(this);
     this.putClick = this.putClick.bind(this);
     this.deleteClick = this.deleteClick.bind(this);
+    //this.componentDidMount = this.componentDidMount.bind(this);
 
   }
   saveChosenItem(item) {
@@ -125,25 +141,32 @@ class Main extends React.Component {
 
   }
   getUsernames() {
-    this.restApi("GET", "/user", username => {
-      username.forEach(username => {
+    this.restApi("GET", "/user", users => {
+        var obj = {};
+
+        users.forEach(user => obj[user.ID] = user.username);
+
+
         this.setState({
-          html: this.state.html.concat(
-            this.usernameRow(username.username, this.state.number, username.ID)
-          )
+          users : obj
         });
-      });
+
+        console.log(this.state.users)
+     
+      
     });
   }
 
   postClick() {
     this.restApi("POST", "/user?username=" + this.state.username, result => {
       console.log(result);
-      var username = this.state.username;
-      this.setState({
-        html: this.state.html.concat(
-          this.usernameRow(username, this.state.number)
-        )
+      this.setState(prevstate => {
+        let objCopy = prevstate.users;
+        objCopy[result] = this.state.username;
+        return objCopy;
+       /* users: this.state.users.concat(
+          {username:username, ID : result}
+        )*/
       });
     });
   }
@@ -163,24 +186,40 @@ class Main extends React.Component {
     );
   }
   deleteClick(){
+
     console.log(this.state.chosenitem);
+    console.log(this.state.html.indexOf(this.state.chosenitem));
+
     this.restApi(
       "DELETE",
       "/user?ID=" +
         this.state.chosenitem.props.id,
       result => {
-        console.log(this.state.html[0]);
-        /*this.state.chosenitem.setState({
-          username: this.state.username
-        });*/
+        this.setState(prevstate => {
+          let objCopy = prevstate.users;
+          delete objCopy[this.state.chosenitem.props.id];
+          return objCopy;
+         
+        });
+        
+
+
+console.log(this.state.users);;
+
+
+
+
+
+
+
+
+        console.log(this.state.html);
+   
       }
     );
   }
 
-
-
   usernameRow(username, number, ID) {
-    this.setState({ number: number + 1 });
 
     return (
       <ListUsername
@@ -206,7 +245,7 @@ class Main extends React.Component {
           handleChange={this.handleChange}
           value={this.state.username}
         />
-        <ListUser html={this.state.html} />
+        <ListUser html={this.state.html} users={this.state.users} saveChosenItem={this.saveChosenItem} number={this.state.number}/>
       </div>
     );
   }

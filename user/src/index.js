@@ -1,90 +1,37 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import "./bootstrap.min.css";
-import "./App.css";
+import ListUser from './components/listUser';
+import UserInterface from './components/userInterface';
 
-class ListUsername extends React.Component {
-  constructor(props) {
-   super(props);
-    this.state = {
-      
-      classBool : false,
-      chosenitem : this.props.chosenitem,
-      username   : this.props.username
-    };
+import "./stylesheets/bootstrap.min.css";
+import "./stylesheets/App.css";
 
-  }
-  render() {
-    return (
-      <tr   id={this.props.id} className={this.state.classBool  ? "tr" : "" } onClick={function(){ /*this.changeColor(this) ;*/ this.props.onClick(this)}.bind(this)} >
-        <td>{this.props.number}</td>
-        <td>{this.state.username}</td>
-      </tr>
-    );
-  }
-}
 
-class ListUser extends React.Component {
-  render() {
-    return (
-      <table>
-        <caption>Users</caption>
 
-        <tbody>
-          <tr>
-            <th>Nr.</th>
-            <th>Username</th>
-          </tr>
-          {Object.keys(this.props.users).map((id,index) => (
-            <ListUsername
-            id={id} 
-            chosenitem={this.props.chosenitem} 
-            onClick={this.props.saveChosenItem} 
-            key={id}
-            username={this.props.users[id]}
-            number={index+1}
-          />
-      ))
-          
-          
-          
-          }
-        </tbody>
-      </table>
-    );
+function  restApi(requestType, URL, callBack) {
+  var data;
+  var request = new XMLHttpRequest();
+
+  request.open(requestType, URL, true);
+  request.setRequestHeader(
+    "Content-Type",
+    "application/x-www-form-urlencoded; charset=UTF-8"
+  );
+  request.send();
+  request.onreadystatechange = function() {
+    if (request.readyState === XMLHttpRequest.DONE) {
+      data = JSON.parse(request.response);
+      callBack(data);
+    }
   }
 }
 
-class Base extends React.Component {
-   
-  render() {
-    return (
-      <div className="userContainer">
-        <input
-          className="inputDef"
-          type="text"
-          name="firstname"
-          value={this.props.value}
-          onChange={this.props.handleChange}
-          spellCheck={false}
 
-        />
-        <button className="buttonDef" onClick={() => this.props.onClick()}>
-          Post
-        </button>
-        <button className="buttonDef">Get</button>
-        <button className="buttonDef"  onClick={() => this.props.onChange()}>Change</button>
-        <button className="buttonDef" onClick={() => this.props.onDelete()}>Delete</button>
-      </div>
-    );
-  }
-}
 
 class Main extends React.Component {
   constructor(props) {
     super(props);
-    this.request = new XMLHttpRequest();
     this.state = {
       html: [],
       username: "",
@@ -94,7 +41,7 @@ class Main extends React.Component {
       chosenitem: false,
       copyHtml : []
     };
-    this.getUsernames();
+    this.getUsers();
     this.handleChange = this.handleChange.bind(this);
     this.saveChosenItem = this.saveChosenItem.bind(this);
     this.putClick = this.putClick.bind(this);
@@ -102,8 +49,9 @@ class Main extends React.Component {
     //this.componentDidMount = this.componentDidMount.bind(this);
 
   }
+
+
   saveChosenItem(item) {
-    
     //If ther is already selected item, remove the color
     if (this.state.chosenitem !== false) {
       this.state.chosenitem.setState({
@@ -125,29 +73,11 @@ class Main extends React.Component {
     this.setState({ username: event.target.value });
   }
 
-  restApi(requestType, URL, callBack) {
-    var data;
-    this.request.open(requestType, URL, true);
-    this.request.setRequestHeader(
-      "Content-Type",
-      "application/x-www-form-urlencoded; charset=UTF-8"
-    );
-    this.request.send();
-    console.log( this.request.statusText);  
-    this.request.onreadystatechange = function() {
-      if (this.request.readyState === XMLHttpRequest.DONE) {
-        //console.log(JSON.parse(request.response));
-        data = JSON.parse(this.request.response);
-        callBack(data);
-      }
-    }.bind(this);
-return false;
-  }
-  getUsernames() {
+ 
+  getUsers() {
     
-    this.restApi("GET", "/user", users => {
+    restApi("GET", "/user", users => {
         var obj = {};
-
         users.forEach(user => obj[user.ID] = user.username);
 
 
@@ -161,9 +91,8 @@ return false;
     });
   }
   postClick() {
-    //this.preventDefault();
    
-    this.restApi("POST", "/user?username=" + this.state.username, result => {
+    restApi("POST", "/user?username=" + this.state.username, result => {
       console.log(result);
       this.setState(prevstate => {
         let objCopy = prevstate.users;
@@ -178,14 +107,14 @@ return false;
   
   putClick() {
     console.log(this.state.chosenitem);
-    this.restApi(
+    restApi(
       "PUT",
       "/user?usernameNew=" +
         this.state.username +
         "&ID=" +
         this.state.chosenitem.props.id,
       result => {
-        
+
           this.state.chosenitem.setState({
             username: this.state.username
           });
@@ -196,7 +125,7 @@ return false;
   }
   deleteClick(){
 
-    this.restApi(
+    restApi(
       "DELETE",
       "/user?ID=" +
         this.state.chosenitem.props.id,
@@ -210,36 +139,22 @@ return false;
         return objCopy;
        
       });
-   this.setState( {
-          
-     chosenitem : false
-       
-      });
+   this.setState({
+     chosenitem: false
+   });
    
       }
     );
   }
 
-  usernameRow(username, number, ID) {
-
-    return (
-      <ListUsername
-        id={ID}
-        chosenitem={this.state.chosenitem}
-        onClick={this.saveChosenItem}
-        key={number}
-        username={username}
-        number={number}
-      />
-    );
-  }
+ 
 
 
 
   render() {
     return (
       <div>
-        <Base
+        <UserInterface
           onClick={() => this.postClick()}
           onChange={this.putClick}
           onDelete={this.deleteClick}

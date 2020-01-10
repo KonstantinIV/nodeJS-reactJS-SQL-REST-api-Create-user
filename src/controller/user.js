@@ -42,7 +42,10 @@ var user = {
             res.write(JSON.stringify(result.insertId));
             res.end();
 
-         });
+         }).catch(error => {
+            console.log(error);
+          });;
+         //database.releaseCon();
        
     },
     DELETE : (urlArray,data,res) =>{

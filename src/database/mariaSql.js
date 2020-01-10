@@ -12,10 +12,16 @@ module.exports.connect = function connect(){
 }
 
 module.exports.runQuery =  function runQuery(query,data){
-  
-  return  this.connect().then(conn => {
-   return conn.query( query,data).then( result => {  
-     return result;/*console.log(result);*/ })
+  return this.connect().then(conn => {
+  return conn.query( query,data).then( (result,callback) => { 
+    conn.end(); 
+     return result;/*console.log(result);*/ });
+
 })
+
+}
+
+module.exports.releaseCon =  function releaseCon(){
+  con.release();
 
 }

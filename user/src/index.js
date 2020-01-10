@@ -57,6 +57,7 @@ class ListUser extends React.Component {
 }
 
 class Base extends React.Component {
+   
   render() {
     return (
       <div className="userContainer">
@@ -102,6 +103,7 @@ class Main extends React.Component {
 
   }
   saveChosenItem(item) {
+    
     //If ther is already selected item, remove the color
     if (this.state.chosenitem !== false) {
       this.state.chosenitem.setState({
@@ -131,6 +133,7 @@ class Main extends React.Component {
       "application/x-www-form-urlencoded; charset=UTF-8"
     );
     this.request.send();
+    console.log( this.request.statusText);  
     this.request.onreadystatechange = function() {
       if (this.request.readyState === XMLHttpRequest.DONE) {
         //console.log(JSON.parse(request.response));
@@ -138,9 +141,10 @@ class Main extends React.Component {
         callBack(data);
       }
     }.bind(this);
-
+return false;
   }
   getUsernames() {
+    
     this.restApi("GET", "/user", users => {
         var obj = {};
 
@@ -156,8 +160,9 @@ class Main extends React.Component {
       
     });
   }
-
   postClick() {
+    //this.preventDefault();
+   
     this.restApi("POST", "/user?username=" + this.state.username, result => {
       console.log(result);
       this.setState(prevstate => {
@@ -170,6 +175,7 @@ class Main extends React.Component {
       });
     });
   }
+  
   putClick() {
     console.log(this.state.chosenitem);
     this.restApi(
@@ -179,41 +185,36 @@ class Main extends React.Component {
         "&ID=" +
         this.state.chosenitem.props.id,
       result => {
-        this.state.chosenitem.setState({
-          username: this.state.username
-        });
+        
+          this.state.chosenitem.setState({
+            username: this.state.username
+          });
+         
+       
       }
     );
   }
   deleteClick(){
-
-    console.log(this.state.chosenitem);
-    console.log(this.state.html.indexOf(this.state.chosenitem));
 
     this.restApi(
       "DELETE",
       "/user?ID=" +
         this.state.chosenitem.props.id,
       result => {
-        this.setState(prevstate => {
-          let objCopy = prevstate.users;
-          delete objCopy[this.state.chosenitem.props.id];
-          return objCopy;
-         
-        });
-        
+      
+      this.setState(prevstate => {
+          
+        let objCopy = prevstate.users;
+        delete objCopy[this.state.chosenitem.props.id];
 
-
-console.log(this.state.users);;
-
-
-
-
-
-
-
-
-        console.log(this.state.html);
+        return objCopy;
+       
+      });
+   this.setState( {
+          
+     chosenitem : false
+       
+      });
    
       }
     );

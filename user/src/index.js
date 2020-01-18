@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 
 import ListUser from './components/listUser';
@@ -32,17 +32,27 @@ function  restApi(requestType, URL, callBack) {
 class Main extends React.Component {
   constructor(props) {
     super(props);
+    //const [items,setDeleteItem] = useState(0);
+    //const [color,setColorItem] = useState(0);
+
+   /* const newHandle  = React.useCallback(itemUser => {
+      setDeleteItem(items => items.filter(item => item.props.id !== itemUser.props.id));
+    }, [setDeleteItem]);*/
+
+    /*const newHandle  = React.useCallback(itemUser => {
+      setColorItem(this.state.);
+    }, [setDeleteItem]);*/
+
     this.state = {
-      html: [],
       username: "",
       users: {},
       number: 1,
       classBool: false,
       chosenitem: false,
-      copyHtml : []
     };
     this.getUsers();
     this.handleChange = this.handleChange.bind(this);
+    //const saveChosenItemNew;
     this.saveChosenItem = this.saveChosenItem.bind(this);
     this.putClick = this.putClick.bind(this);
     this.deleteClick = this.deleteClick.bind(this);
@@ -50,9 +60,18 @@ class Main extends React.Component {
 
   }
 
-
-  saveChosenItem(item) {
-    //If ther is already selected item, remove the color
+/* saveChosenItemNew = React.useCallback(item => {
+ console.log("kool");
+}, []);*/
+/*saveChosenItemNew(item) {
+  const saveChosenItemNew = useCallback(item => {
+    this.saveChosenItem
+  }, []);
+  
+  return saveChosenItemNew;
+}*/
+   saveChosenItem(item) {
+    //If ther is already selected item, remove the color from it
     if (this.state.chosenitem !== false) {
       this.state.chosenitem.setState({
         classBool: false
@@ -67,6 +86,7 @@ class Main extends React.Component {
       chosenitem: item,
       username: item.props.username
     });
+
   }
 
   handleChange(event) {
@@ -161,7 +181,7 @@ class Main extends React.Component {
           handleChange={this.handleChange}
           value={this.state.username}
         />
-        <ListUser html={this.state.html} users={this.state.users} saveChosenItem={this.saveChosenItem} number={this.state.number}/>
+        <ListUser  users={this.state.users} saveChosenItem={this.saveChosenItem} number={this.state.number}/>
       </div>
     );
   }

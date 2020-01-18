@@ -15,9 +15,7 @@ export default class UserInterface extends React.Component {
             spellCheck={false}
   
           />
-          <button className="buttonDef" onClick={() => this.props.onClick()}>
-            Post
-          </button>
+          <button className="buttonDef" onClick={() => this.props.onClick()}>Post</button>
           <button className="buttonDef">Get</button>
           <button className="buttonDef"  onClick={() => this.props.onChange()}>Change</button>
           <button className="buttonDef" onClick={() => this.props.onDelete()}>Delete</button>

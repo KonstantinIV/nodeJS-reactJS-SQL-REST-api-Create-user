@@ -1,6 +1,10 @@
 # nodeJS-reactJS-SQL-REST-api-Create-user
 
+Purpose : Tried to implement MVC OR Model - View - Controller type of pattern on NODE.js backend for learning purposes
+
 Simple list APP that allows to add usernames to list modify them or delete them. 
+
+
 
 Backend: NODE.JS, MariaDB
 
